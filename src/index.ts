@@ -32,7 +32,7 @@ async function fetchNewArticle(env: Env) {
 			const written_minutes = new Date(item["dc:date"]).getMinutes();
 			const title = item["title"];
 			return written_minutes === now_minutes && title.substring(0, 6) !== "anond:";
-		});
+		}).reverse();
 		return items;
 	} catch (error) {
 		console.error('Error fetching RSS feed:', error);
