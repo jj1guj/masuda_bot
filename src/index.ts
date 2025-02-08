@@ -30,7 +30,8 @@ async function fetchNewArticle(env: Env) {
 		const now_minutes = (60 + new Date().getMinutes() - 1) % 60;
 		const items = jsonString["rdf:RDF"]["item"].filter((item: any) => {
 			const written_minutes = new Date(item["dc:date"]).getMinutes();
-			return written_minutes === now_minutes;
+			const title = item["title"];
+			return written_minutes === now_minutes && title.substring(0, 6) !== "anond:";
 		});
 		return items;
 	} catch (error) {
