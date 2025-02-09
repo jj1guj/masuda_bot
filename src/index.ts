@@ -39,13 +39,35 @@ async function fetchNewArticle(env: Env) {
 	}
 }
 
+function replaceUrlInDescription(description: string, content: string): string {
+	// URLの正規表現パターン
+	const urlPattern = /(https?:\/\/[^\s]+)/g;
+	const matches = description.match(urlPattern);
+
+	if (matches) {
+		// description内のURLをcontent内の同じURLで置換
+		matches.forEach(partialUrl => {
+			// 部分的なURLをエスケープして正規表現パターンを作成
+			const escapedPartialUrl = partialUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+			const fullUrlPattern = new RegExp(escapedPartialUrl.replace(/\\\.\\\.\\\./g, '[^\\s<]*'), 'g');
+			const fullUrlMatch = content.match(fullUrlPattern);
+			if (fullUrlMatch) {
+				description = description.replace(partialUrl, fullUrlMatch[0]);
+			}
+		});
+	}
+
+	return description;
+}
+
 async function postNewArticle(env: Env, items: any) {
 	for (let item of items) {
 		const title = item["title"];
-		const description = item["description"];
+		// description内のURLをcontent:encoded内の同じURLで置換
+		const description = replaceUrlInDescription(item["description"], item["content:encoded"]);
 		const link = item["link"];
 		const post_string = `新しい記事が投稿されました\n\n${title}\n${description}\n${link}`;
-		const response = await fetch(`https://${env.MISSKEY_HOST}/api/notes/create`, {
+		await fetch(`https://${env.MISSKEY_HOST}/api/notes/create`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
