@@ -45,14 +45,22 @@ function replaceUrlInDescription(description: string, content: string): string {
 	const matches = description.match(urlPattern);
 
 	if (matches) {
+		// <a>タグからURLを抽出
+		const anchorPattern = /<a\s+[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g;
+		let match;
+		const urls: string[] = [];
+
+		while ((match = anchorPattern.exec(content)) !== null) {
+			urls.push(match[1]);
+		}
+
 		// description内のURLをcontent内の同じURLで置換
 		matches.forEach(partialUrl => {
-			// 部分的なURLをエスケープして正規表現パターンを作成
 			const escapedPartialUrl = partialUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 			const fullUrlPattern = new RegExp(escapedPartialUrl.replace(/\\\.\\\.\\\./g, '[^\\s<]*'), 'g');
-			const fullUrlMatch = content.match(fullUrlPattern);
+			const fullUrlMatch = urls.find(url => fullUrlPattern.test(url));
 			if (fullUrlMatch) {
-				description = description.replace(partialUrl, fullUrlMatch[0]);
+				description = description.replace(partialUrl, fullUrlMatch);
 			}
 		});
 	}
