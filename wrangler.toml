@@ -2,6 +2,9 @@ name = "masuda-bot"
 main = "src/index.ts"
 compatibility_date = "2025-01-29"
 
+[observability.logs]
+enabled = true
+
 [triggers]
 crons =  ["*/1 * * * *"]
 
