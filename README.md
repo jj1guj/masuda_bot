@@ -51,7 +51,7 @@ npx wrangler kv namespace create POSTED_ITEMS --preview
 - `MASUDA_URL`: 監視する RSS URL
 - `MISSKEY_HOST`: 投稿先 Misskey ホスト名
 
-`MISSKEY_TOKEN` は Secret として設定する運用を推奨します。
+`MISSKEY_TOKEN` は [wrangler.toml](wrangler.toml) には書かず、Cloudflare Secret として設定してください。
 
 ```bash
 npx wrangler secret put MISSKEY_TOKEN
@@ -59,8 +59,8 @@ npx wrangler secret put MISSKEY_TOKEN
 
 補足:
 
-- すでに [wrangler.toml](wrangler.toml) に `MISSKEY_TOKEN` を書いている場合でも、Secret を設定すればそちらを使う運用に寄せられます。
-- Secret を使う場合は [wrangler.toml](wrangler.toml) から平文の `MISSKEY_TOKEN` を削除しておく方が安全です。
+- ローカル開発でも Secret を使う場合は、必要に応じて `npx wrangler secret put MISSKEY_TOKEN --local` を使ってください。
+- トークン発行時は Misskey でノート投稿に必要な権限を付与してください。
 
 ### 5. 型定義を更新
 

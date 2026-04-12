@@ -11,7 +11,6 @@ crons =  ["*/1 * * * *"]
 [vars]
 MASUDA_URL = "https://anond.hatelabo.jp/rss"
 MISSKEY_HOST = "jiskey.dev"
-MISSKEY_TOKEN = "API_TOKEN"
 
 [[kv_namespaces]]
 binding = "POSTED_ITEMS"
