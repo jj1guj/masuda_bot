@@ -25,7 +25,15 @@ npm install
 npx wrangler login
 ```
 
-### 3. KV Namespace を作成
+### 3. 設定ファイルを作成
+
+まず [wrangler.toml.sample](wrangler.toml.sample) をコピーして、ローカル用の `wrangler.toml` を作成してください。
+
+```bash
+cp wrangler.toml.sample wrangler.toml
+```
+
+### 4. KV Namespace を作成
 
 本番用:
 
@@ -39,19 +47,19 @@ npx wrangler kv namespace create POSTED_ITEMS
 npx wrangler kv namespace create POSTED_ITEMS --preview
 ```
 
-出力された `id` と `preview_id` を [wrangler.toml](wrangler.toml) の以下へ設定してください。
+出力された `id` と `preview_id` をローカルの `wrangler.toml` の以下へ設定してください。
 
 - `REPLACE_WITH_KV_NAMESPACE_ID`
 - `REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID`
 
-### 4. 設定を確認
+### 5. 設定を確認
 
-[wrangler.toml](wrangler.toml) の `[vars]` を環境に合わせて設定します。
+ローカルの `wrangler.toml` の `[vars]` を環境に合わせて設定します。
 
 - `MASUDA_URL`: 監視する RSS URL
 - `MISSKEY_HOST`: 投稿先 Misskey ホスト名
 
-`MISSKEY_TOKEN` は [wrangler.toml](wrangler.toml) には書かず、Cloudflare Secret として設定してください。
+`MISSKEY_TOKEN` は `wrangler.toml` には書かず、Cloudflare Secret として設定してください。
 
 ```bash
 npx wrangler secret put MISSKEY_TOKEN
@@ -62,7 +70,9 @@ npx wrangler secret put MISSKEY_TOKEN
 - ローカル開発でも Secret を使う場合は、必要に応じて `npx wrangler secret put MISSKEY_TOKEN --local` を使ってください。
 - トークン発行時は Misskey でノート投稿に必要な権限を付与してください。
 
-### 5. 型定義を更新
+### 6. 型定義を更新
+
+ローカルの `wrangler.toml` を作成したあとに実行してください。
 
 ```bash
 npm run cf-typegen
@@ -98,6 +108,7 @@ npm run dev
 
 ## 運用メモ
 
-- 現在の Cron は [wrangler.toml](wrangler.toml) で `*/1 * * * *` に設定されています。
+- リポジトリには [wrangler.toml.sample](wrangler.toml.sample) のみを置き、実際の `wrangler.toml` はローカルで作成して管理します。
+- 現在の Cron は [wrangler.toml.sample](wrangler.toml.sample) で `*/1 * * * *` に設定されています。
 - 初回実行時は投稿を行わず、最新 link のみ記録します。
 - RSS に含まれる `anond:` タイトルの記事は投稿対象から除外しています。
